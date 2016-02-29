@@ -88,7 +88,48 @@ th, td {
 			echo "<br /><br />";
 			$jsonResultArray = json_decode($json, true);
 			if ($jsonResultArray["Status"] === "SUCCESS"){
-				
+				echo $jsonResultArray["Name"];
+				echo "<br />";
+				echo $jsonResultArray["Symbol"];
+				echo "<br />";
+				echo $jsonResultArray["LastPrice"];
+				echo "<br />";
+				echo round($jsonResultArray["Change"], 2);
+				echo "<br />";
+				echo strval(round($jsonResultArray["ChangePercent"], 2)) . "%";
+				echo "<br />";
+				echo $jsonResultArray["Timestamp"];
+				echo "<br />";
+				echo strval(round($jsonResultArray["MarketCap"] / 1000000000, 2)) . " B";
+				echo "<br />";
+				echo number_format(($jsonResultArray["Volume"]), $decimals = 0 , $dec_point = "." , $thousands_sep = ",");
+				echo "<br />";
+				$changeYTD = $jsonResultArray["LastPrice"] - $jsonResultArray["ChangeYTD"];
+				if ($changeYTD < 0) echo "(" . strval(round($changeYTD, 2)) . ")";
+				else strval(round($jsonResultArray["changeYTD"], 2));
+				echo "<br />";
+				echo strval(round($jsonResultArray["ChangePercentYTD"], 2)) . "%";
+				echo "<br />";
+				echo $jsonResultArray["High"];
+				echo "<br />";
+				echo $jsonResultArray["Low"];
+				echo "<br />";
+				echo $jsonResultArray["Open"];
+				echo "<br />";
+				print_r(($jsonResultArray["Timestamp"]));
+
+				$matches = array();
+				preg_match('/^[A-Za-z]{3} ([A-Za-z]{3}) (\d+) (\d{2}:\d{2}):\d{2} \S* (\d{4})$/', $jsonResultArray["Timestamp"], $matches);
+				// echo ("<br />Timestamp " . $matches[4] . "-" . $matches[1]  . "-" . $matches[2] . " " . $matches[3]);
+				// /* e.g. 2016-Feb-26 15:59 */
+				// $timestamp_array = date_parse_from_format('Y-M-d H:i', $matches[4] . "-" . $matches[1]  . "-" . $matches[2] . " " . $matches[3]);
+				// echo "<br />AAAAAAAAA";
+				// print_r($timestamp_array);
+
+				echo "<br />I want a girlfriend!";
+				$date = DateTime::createFromFormat('Y-M-d H:i', $matches[4] . "-" . $matches[1]  . "-" . $matches[2] . " " . $matches[3]);
+				echo $date->format('Y-m-d h:i A');
+
 			} else {
 				echo "There is no stock information available.";
 			}
