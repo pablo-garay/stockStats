@@ -30,7 +30,7 @@
 		padding-top: 5px;
 		padding-bottom: 2em;
 		width: 460px;
-		height: 168px;
+		height: 125px;
 		margin: 0 auto;
 		display: block;
 	}
@@ -66,9 +66,14 @@
 		border:0; 
 		height:1px;
 		width:97%;
+		margin: 0; padding: 0;
 	}
 
-	.form-block {		
+	.form-blocks {
+		display: block;
+	}
+
+	.form-block {
 		margin: 5px;
 		padding: 0;
 	}
@@ -84,6 +89,25 @@
 		width: 12px;
 	}
 
+	.form-title {
+		font-weight: bold;
+		font-style: italic;
+		margin: 0; padding: 0;
+	}
+
+	input[type=submit], input[type=reset] {
+		background-color: white;
+		border-radius:5px;
+	}
+
+	.inlined {
+		display: inline;
+	}
+
+	.blocked {
+		display: block;
+	}
+
 </style>
 </head>
 
@@ -92,20 +116,22 @@
     <div class="centered" style="text-align: center; padding: 15em;">
         <div style="margin-bottom: 3em;">
         	<div class="form-container">
-				<h1><i>Stock Search</i></h1>
+				<h1 class="form-title">Stock Search</h1>
 				<hr>
 
 				<form method="POST" action="">
 					<div class="form-input">
-						<label class="input-label" for="input">Company Name or Symbol: </label>
-						<input type="text" id="input" name="input" placeholder="Enter company name e.g. Apple"
-						required pattern="^[a-zA-Z0-9][a-zA-Z0-9 ]*$" 
-						value="<?php if (isset($_POST["input"])) echo htmlspecialchars($_POST['input']); ?>" > </input>
+						
+							<label for="input">Company Name or Symbol: </label>
+							<div class="inlined">
+								<input type="text" id="input" name="input" placeholder="Enter company name e.g. Apple"
+									required pattern="^[a-zA-Z0-9][a-zA-Z0-9 ]*$" 
+									value="<?php if (isset($_POST["input"])) echo htmlspecialchars($_POST['input']); ?>" > </input>
+								<br />
+								<input type="submit" value="Search" autofocus></input>
+								<input type="reset" value="Clear"></input>		
+							</div>						
 					</div>
-					<div class="form-block">
-						<input type="submit" value="Search" autofocus></input>
-						<input type="reset" value="Clear"></input>
-					</div>	
 				</form>
 				<div class="form-block">
 					<a href="http://www.markit.com/product/markit-on-demand">Powered by Markit on Demand</a>
@@ -254,7 +280,7 @@
 				echo "There is no stock information available.";
 			}
 		} else {
-			echo "no HEY";
+			echo "no GET request";
 		}		
 		?>	
 	</div>
