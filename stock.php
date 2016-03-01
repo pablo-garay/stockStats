@@ -3,13 +3,24 @@
 
 <head>
 <style>
-table, th, td {
-    border: 1px solid black;
-    border-collapse: collapse;
-}
-th, td {
-    padding: 5px;
-}
+	table, th, td {
+	    border: 2px solid;
+	    border-color: #CCCBCB;
+	    border-collapse: collapse;
+	}
+	th, td {
+		text-align: left;
+	    padding: 5px;
+	}
+	th {
+		font-weight: bold;
+		text-align: left;
+		background-color: #F5F5F5;
+	}
+	td {
+		background-color: #FBFAF9;
+	}
+
 </style>
 </head>
 
@@ -105,10 +116,14 @@ th, td {
 
 				echo '<tr><td>Change</td><td>';
 				echo round($jsonResultArray["Change"], 2);
+				if ($jsonResultArray["Change"] > 0) 		echo '<img src="img/Green_Arrow_Up.png" height="12" width="12">';
+				else if ($jsonResultArray["Change"] < 0) 	echo '<img src="img/Red_Arrow_Down.png" height="12" width="12">';
 				echo '</td></tr>';
 
 				echo '<tr><td>Change Percent</td><td>';
 				echo strval(round($jsonResultArray["ChangePercent"], 2)) . "%";
+				if ($jsonResultArray["ChangePercent"] > 0) 		echo '<img src="img/Green_Arrow_Up.png" height="12" width="12">';
+				else if ($jsonResultArray["ChangePercent"] < 0) echo '<img src="img/Red_Arrow_Down.png" height="12" width="12">';				
 				echo '</td></tr>';
 
 				/* Here comes the Timestamp. It requires a few manipulations to output in the correct format */
@@ -136,12 +151,20 @@ th, td {
 
 				echo '<tr><td>Change YTD</td><td>';
 				$changeYTD = $jsonResultArray["LastPrice"] - $jsonResultArray["ChangeYTD"];
-				if ($changeYTD < 0) echo "(" . strval(round($changeYTD, 2)) . ")";
-				else echo strval(round($jsonResultArray["ChangeYTD"], 2));
+				if ($changeYTD < 0){ 
+					echo "(" . strval(round($changeYTD, 2)) . ")";				
+					echo '<img src="img/Red_Arrow_Down.png" height="12" width="12">';						
+				}
+				else {
+					echo strval(round($jsonResultArray["ChangeYTD"], 2));
+					if ($changeYTD > 0) echo '<img src="img/Green_Arrow_Up.png" height="12" width="12">';
+				}
 				echo '</td></tr>';
 
 				echo '<tr><td>Change Percent YTD</td><td>';
 				echo strval(round($jsonResultArray["ChangePercentYTD"], 2)) . "%";
+				if ($jsonResultArray["ChangePercentYTD"] > 0) 		echo '<img src="img/Green_Arrow_Up.png" height="12" width="12">';
+				else if ($jsonResultArray["ChangePercentYTD"] < 0) 	echo '<img src="img/Red_Arrow_Down.png" height="12" width="12">';					
 				echo '</td></tr>';
 
 				echo '<tr><td>High</td><td>';
