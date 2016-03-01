@@ -15,10 +15,31 @@
 	{
 	    margin: 0 auto; 
 	}
+
+	h1 {
+		margin: 0; padding: 0;
+	}
+
+	div.form-container {
+		background-color: #F5F5F5;
+		border: 1px solid;
+		border-color: #DCDCDC;
+		margin-left: 1px;
+		margin-bottom: 10px;
+		margin-left: 0; margin-right: 0;
+		padding-top: 5px;
+		padding-bottom: 2em;
+		width: 460px;
+		height: 168px;
+		margin: 0 auto;
+		display: block;
+	}
+
 	table, th, td {
 	    border: 2px solid;
 	    border-color: #CCCBCB;
 	    border-collapse: collapse;
+	    font-family: Arial, Helvetica, sans-serif;
 	}
 	th, td {
 		text-align: left;
@@ -40,6 +61,29 @@
 		width: 60%;
 	}
 
+	hr {
+		background:#CDCCCD; 
+		border:0; 
+		height:1px;
+		width:97%;
+	}
+
+	.form-block {		
+		margin: 5px;
+		padding: 0;
+	}
+
+	.form-input {
+		margin-top: 20px;
+		margin-left: 10px;
+		text-align: left;
+	}
+
+	.marker-icon {
+		height: 12px;
+		width: 12px;
+	}
+
 </style>
 </head>
 
@@ -47,20 +91,26 @@
 
     <div class="centered" style="text-align: center; padding: 15em;">
         <div style="margin-bottom: 3em;">
+        	<div class="form-container">
+				<h1><i>Stock Search</i></h1>
+				<hr>
 
-			<h1><i>Stock Search</i></h1>
-
-			<form method="POST" action="">
-				<label for="input">Company Name or Symbol: </label>
-				<input type="text" id="input" name="input" placeholder="Enter company name e.g. Apple"
-				required pattern="^[a-zA-Z0-9][a-zA-Z0-9 ]*$" 
-				value="<?php if (isset($_POST["input"])) echo htmlspecialchars($_POST['input']); ?>" > </input>
-				<br />
-				<input type="submit" value="Search" autofocus></input>
-				<input type="reset" value="Clear"></input>
-				<br />	
-			</form>
-			<a href="http://www.markit.com/product/markit-on-demand">Powered by Markit on Demand</a>
+				<form method="POST" action="">
+					<div class="form-input">
+						<label class="input-label" for="input">Company Name or Symbol: </label>
+						<input type="text" id="input" name="input" placeholder="Enter company name e.g. Apple"
+						required pattern="^[a-zA-Z0-9][a-zA-Z0-9 ]*$" 
+						value="<?php if (isset($_POST["input"])) echo htmlspecialchars($_POST['input']); ?>" > </input>
+					</div>
+					<div class="form-block">
+						<input type="submit" value="Search" autofocus></input>
+						<input type="reset" value="Clear"></input>
+					</div>	
+				</form>
+				<div class="form-block">
+					<a href="http://www.markit.com/product/markit-on-demand">Powered by Markit on Demand</a>
+				</div>
+        	</div>
 		</div>
 
 		<?php
@@ -134,14 +184,14 @@
 
 				echo '<tr><th>Change</th><td class="td2">';
 				echo round($jsonResultArray["Change"], 2);
-				if ($jsonResultArray["Change"] > 0) 		echo '<img src="img/Green_Arrow_Up.png" height="12" width="12">';
-				else if ($jsonResultArray["Change"] < 0) 	echo '<img src="img/Red_Arrow_Down.png" height="12" width="12">';
+				if ($jsonResultArray["Change"] > 0) 		echo '<img src="img/Green_Arrow_Up.png" class="marker-icon" alt="marker">';
+				else if ($jsonResultArray["Change"] < 0) 	echo '<img src="img/Red_Arrow_Down.png" class="marker-icon" alt="marker">';
 				echo '</td></tr>';
 
 				echo '<tr><th>Change Percent</th><td class="td2">';
 				echo strval(round($jsonResultArray["ChangePercent"], 2)) . "%";
-				if ($jsonResultArray["ChangePercent"] > 0) 		echo '<img src="img/Green_Arrow_Up.png" height="12" width="12">';
-				else if ($jsonResultArray["ChangePercent"] < 0) echo '<img src="img/Red_Arrow_Down.png" height="12" width="12">';				
+				if ($jsonResultArray["ChangePercent"] > 0) 		echo '<img src="img/Green_Arrow_Up.png" class="marker-icon" alt="marker">';
+				else if ($jsonResultArray["ChangePercent"] < 0) echo '<img src="img/Red_Arrow_Down.png" class="marker-icon" alt="marker">';				
 				echo '</td></tr>';
 
 				/* Here comes the Timestamp. It requires a few manipulations to output in the correct format */
@@ -172,18 +222,18 @@
 				$changeYTD = $jsonResultArray["LastPrice"] - $jsonResultArray["ChangeYTD"];
 				if ($changeYTD < 0){ 
 					echo "(" . strval(round($changeYTD, 2)) . ")";				
-					echo '<img src="img/Red_Arrow_Down.png" height="12" width="12">';						
+					echo '<img src="img/Red_Arrow_Down.png" class="marker-icon" alt="marker">';						
 				}
 				else {
 					echo strval(round($jsonResultArray["ChangeYTD"], 2));
-					if ($changeYTD > 0) echo '<img src="img/Green_Arrow_Up.png" height="12" width="12">';
+					if ($changeYTD > 0) echo '<img src="img/Green_Arrow_Up.png" class="marker-icon" alt="marker">';
 				}
 				echo '</td></tr>';
 
 				echo '<tr><th>Change Percent YTD</th><td class="td2">';
 				echo strval(round($jsonResultArray["ChangePercentYTD"], 2)) . "%";
-				if ($jsonResultArray["ChangePercentYTD"] > 0) 		echo '<img src="img/Green_Arrow_Up.png" height="12" width="12">';
-				else if ($jsonResultArray["ChangePercentYTD"] < 0) 	echo '<img src="img/Red_Arrow_Down.png" height="12" width="12">';					
+				if ($jsonResultArray["ChangePercentYTD"] > 0) 		echo '<img src="img/Green_Arrow_Up.png" class="marker-icon" alt="marker">';
+				else if ($jsonResultArray["ChangePercentYTD"] < 0) 	echo '<img src="img/Red_Arrow_Down.png" class="marker-icon" alt="marker">';					
 				echo '</td></tr>';
 
 				echo '<tr><th>High</th><td class="td2">';
