@@ -5,10 +5,12 @@
 <style>
 	body {
 		text-align: center;
+		margin: 0;
 	}
 	div.centered 
 	{
 	    text-align: center;
+	    padding: 10em;
 	}
 
 	div.centered table 
@@ -24,15 +26,13 @@
 		background-color: #F5F5F5;
 		border: 1px solid;
 		border-color: #DCDCDC;
-		margin-left: 1px;
-		margin-bottom: 10px;
-		margin-left: 0; margin-right: 0;
 		padding-top: 5px;
 		padding-bottom: 2em;
 		width: 460px;
 		height: 125px;
 		margin: 0 auto;
 		display: block;
+		margin-top: 10px; margin-bottom: 10px;
 	}
 
 	table, th, td {
@@ -66,7 +66,7 @@
 		border:0; 
 		height:1px;
 		width:97%;
-		margin: 0; padding: 0;
+		margin: 0 auto; padding: 0;
 	}
 
 	.form-blocks {
@@ -98,14 +98,26 @@
 	input[type=submit], input[type=reset] {
 		background-color: white;
 		border-radius:5px;
+		display: block;
 	}
 
-	.inlined {
+	.horizontal-box {
 		display: inline;
 	}
 
-	.blocked {
-		display: block;
+	.vertical-box {
+		display: inline;
+	}
+
+	.info-message {
+		background-color: #FCFBFA;
+		border: 2px solid;
+	    border-color: #CCCBCB;
+	    margin: 0 auto;
+	    padding: 4px;
+	    width: 700px;
+	    font-family: Arial, Helvetica, sans-serif;
+	    text-align: center;
 	}
 
 </style>
@@ -113,35 +125,34 @@
 
 <body>
 
-    <div class="centered" style="text-align: center; padding: 15em;">
-        <div style="margin-bottom: 3em;">
-        	<div class="form-container">
-				<h1 class="form-title">Stock Search</h1>
-				<hr>
+    <div class="centered">
+    	<div class="form-container">
+			<h1 class="form-title">Stock Search</h1>
+			<hr>
 
-				<form method="POST" action="">
-					<div class="form-input">
-						
+			<form method="POST" action="">
+				<div class="form-input">
+						<div class="horizontal-box">
 							<label for="input">Company Name or Symbol: </label>
-							<div class="inlined">
+							
+							<div class="vertical-box">
 								<input type="text" id="input" name="input" placeholder="Enter company name e.g. Apple"
 									required pattern="^[a-zA-Z0-9][a-zA-Z0-9 ]*$" 
 									value="<?php if (isset($_POST["input"])) echo htmlspecialchars($_POST['input']); ?>" > </input>
-								<br />
 								<input type="submit" value="Search" autofocus></input>
-								<input type="reset" value="Clear"></input>		
-							</div>						
-					</div>
-				</form>
-				<div class="form-block">
-					<a href="http://www.markit.com/product/markit-on-demand">Powered by Markit on Demand</a>
+								<input type="reset" value="Clear"></input>
+							</div>
+						</div>						
 				</div>
+			</form>
+			<div class="form-block">
+				<a href="http://www.markit.com/product/markit-on-demand">Powered by Markit on Demand</a>
+			</div>
         	</div>
-		</div>
 
 		<?php
 		if(isset($_POST["input"])){
-			print_r($_POST);
+			// print_r($_POST);
 
 			/* Output debugging data */
 			// $xml = file_get_contents("http://dev.markitondemand.com/MODApis/Api/v2/Lookup/xml?input=APPL");
@@ -150,12 +161,11 @@
 
 			/* XML */
 			$xmlElement = simplexml_load_file('http://dev.markitondemand.com/MODApis/Api/v2/Lookup/xml?input=' . $_POST["input"]);	 
-			echo "<br /><br />";
 		    
 		    if ($xmlElement->count() == 0) {
 			    //it's empty
-			    echo "No Record has been found";
-			    echo "<br />";
+			    echo '<div class="info-message">No Record has been found</div>';
+			    
 			    // print_r($xmlElement);
 			}
 			else {
@@ -190,9 +200,14 @@
 		if (isset($_GET["symbol"])){
 			/* JSON */
 			$json = file_get_contents("http://dev.markitondemand.com/MODApis/Api/v2/Quote/json?symbol=" . $_GET["symbol"]);
-			echo "<br /><br />";
 			$jsonResultArray = json_decode($json, true);
-			if ($jsonResultArray["Status"] === "SUCCESS"){
+
+			// /* for debugging purposes */
+			// print_r($jsonResultArray);
+			if (isset($jsonResultArray["Message"])){
+				echo '<div class="info-message">No symbol matches found for symbol input.  Try another symbol such as MSFT or AAPL.</div>';
+				
+			} else if ($jsonResultArray["Status"] === "SUCCESS"){
 
 				echo '<table class="table2">';
 
@@ -277,11 +292,9 @@
 				echo '</table>';				
 
 			} else {
-				echo "There is no stock information available.";
+				echo '<div class="info-message">There is no stock information available.</div>';
 			}
-		} else {
-			echo "no GET request";
-		}		
+		}
 		?>	
 	</div>
 </body>
