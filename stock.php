@@ -3,6 +3,18 @@
 
 <head>
 <style>
+	body {
+		text-align: center;
+	}
+	div.centered 
+	{
+	    text-align: center;
+	}
+
+	div.centered table 
+	{
+	    margin: 0 auto; 
+	}
 	table, th, td {
 	    border: 2px solid;
 	    border-color: #CCCBCB;
@@ -20,13 +32,20 @@
 	td {
 		background-color: #FBFAF9;
 	}
+	td.td2 {
+		text-align: center;
+	}
+
+	.table1, .table2{
+		width: 60%;
+	}
 
 </style>
 </head>
 
 <body>
 
-    <div class="body-content" style="text-align: center; padding: 15em;">
+    <div class="centered" style="text-align: center; padding: 15em;">
         <div style="margin-bottom: 3em;">
 
 			<h1><i>Stock Search</i></h1>
@@ -43,9 +62,8 @@
 			</form>
 			<a href="http://www.markit.com/product/markit-on-demand">Powered by Markit on Demand</a>
 		</div>
-	</div>
 
-	<?php
+		<?php
 		if(isset($_POST["input"])){
 			print_r($_POST);
 
@@ -70,16 +88,16 @@
 
 			    echo "<br />";
 
-			    echo '<table style="width:100%">';
+			    echo '<table class="table1">';
 			    echo '<tr><th>Name</th><th>Symbol</th><th>Exchange</th><th>Details</th></tr>';
 
 			    foreach ($xmlElement->LookupResult as $result) {
 			    	echo '<tr>';
 				   // print_r($result);
-			    	echo '<th>' . $result->Name . '</th>';
-			    	echo '<th>' . $result->Symbol . '</th>';
-			    	echo '<th>' . $result->Exchange . '</th>';
-			    	echo '<th>' . '<a href="?symbol=' . $result->Symbol . '">More Info</a>' . '</th>';
+			    	echo '<td>' . $result->Name . '</td>';
+			    	echo '<td>' . $result->Symbol . '</td>';
+			    	echo '<td>' . $result->Exchange . '</td>';
+			    	echo '<td>' . '<a href="?symbol=' . $result->Symbol . '">More Info</a>' . '</td>';
 
 				   echo "<br />";
 				   echo '</tr>';
@@ -100,34 +118,34 @@
 			$jsonResultArray = json_decode($json, true);
 			if ($jsonResultArray["Status"] === "SUCCESS"){
 
-				echo '<table style="width:100%">';
+				echo '<table class="table2">';
 
-				echo '<tr><td>Name</td><td>';
+				echo '<tr><th>Name</th><td class="td2">';
 				echo $jsonResultArray["Name"];
 				echo '</td></tr>';
 
-				echo '<tr><td>Symbol</td><td>';
+				echo '<tr><th>Symbol</th><td class="td2">';
 				echo $jsonResultArray["Symbol"];
 				echo '</td></tr>';
 
-				echo '<tr><td>Last Price</td><td>';
+				echo '<tr><th>Last Price</th><td class="td2">';
 				echo $jsonResultArray["LastPrice"];
 				echo '</td></tr>';
 
-				echo '<tr><td>Change</td><td>';
+				echo '<tr><th>Change</th><td class="td2">';
 				echo round($jsonResultArray["Change"], 2);
 				if ($jsonResultArray["Change"] > 0) 		echo '<img src="img/Green_Arrow_Up.png" height="12" width="12">';
 				else if ($jsonResultArray["Change"] < 0) 	echo '<img src="img/Red_Arrow_Down.png" height="12" width="12">';
 				echo '</td></tr>';
 
-				echo '<tr><td>Change Percent</td><td>';
+				echo '<tr><th>Change Percent</th><td class="td2">';
 				echo strval(round($jsonResultArray["ChangePercent"], 2)) . "%";
 				if ($jsonResultArray["ChangePercent"] > 0) 		echo '<img src="img/Green_Arrow_Up.png" height="12" width="12">';
 				else if ($jsonResultArray["ChangePercent"] < 0) echo '<img src="img/Red_Arrow_Down.png" height="12" width="12">';				
 				echo '</td></tr>';
 
 				/* Here comes the Timestamp. It requires a few manipulations to output in the correct format */
-				echo '<tr><td>Timestamp</td><td>';
+				echo '<tr><th>Timestamp</th><td class="td2">';
 				// echo $jsonResultArray["Timestamp"];
 				$matches = array();
 				preg_match('/^[A-Za-z]{3} ([A-Za-z]{3}) (\d+) (\d{2}:\d{2}):\d{2} \S* (\d{4})$/', $jsonResultArray["Timestamp"], $matches);
@@ -135,21 +153,22 @@
 				// /* e.g. 2016-Feb-26 15:59 */
 				// $timestamp_array = date_parse_from_format('Y-M-d H:i', $matches[4] . "-" . $matches[1]  . "-" . $matches[2] . " " . $matches[3]);
 				// echo "<br />AAAAAAAAA";
-				// print_r($timestamp_array);
+				// print_r($timestamp_array);				
 
 				$date = DateTime::createFromFormat('Y-M-d H:i', $matches[4] . "-" . $matches[1]  . "-" . $matches[2] . " " . $matches[3]);
 				echo $date->format('Y-m-d h:i A');				
 				echo '</td></tr>';
+				// print_r(($jsonResultArray["Timestamp"]));
 
-				echo '<tr><td>Market Cap</td><td>';
+				echo '<tr><th>Market Cap</th><td class="td2">';
 				echo strval(round($jsonResultArray["MarketCap"] / 1000000000, 2)) . " B";
 				echo '</td></tr>';
 
-				echo '<tr><td>Volume</td><td>';
+				echo '<tr><th>Volume</th><td class="td2">';
 				echo number_format(($jsonResultArray["Volume"]), $decimals = 0 , $dec_point = "." , $thousands_sep = ",");
 				echo '</td></tr>';
 
-				echo '<tr><td>Change YTD</td><td>';
+				echo '<tr><th>Change YTD</th><td class="td2">';
 				$changeYTD = $jsonResultArray["LastPrice"] - $jsonResultArray["ChangeYTD"];
 				if ($changeYTD < 0){ 
 					echo "(" . strval(round($changeYTD, 2)) . ")";				
@@ -161,27 +180,25 @@
 				}
 				echo '</td></tr>';
 
-				echo '<tr><td>Change Percent YTD</td><td>';
+				echo '<tr><th>Change Percent YTD</th><td class="td2">';
 				echo strval(round($jsonResultArray["ChangePercentYTD"], 2)) . "%";
 				if ($jsonResultArray["ChangePercentYTD"] > 0) 		echo '<img src="img/Green_Arrow_Up.png" height="12" width="12">';
 				else if ($jsonResultArray["ChangePercentYTD"] < 0) 	echo '<img src="img/Red_Arrow_Down.png" height="12" width="12">';					
 				echo '</td></tr>';
 
-				echo '<tr><td>High</td><td>';
+				echo '<tr><th>High</th><td class="td2">';
 				echo $jsonResultArray["High"];
 				echo '</td></tr>';
 
-				echo '<tr><td>Low</td><td>';
+				echo '<tr><th>Low</th><td class="td2">';
 				echo $jsonResultArray["Low"];
 				echo '</td></tr>';
 
-				echo '<tr><td>Open</td><td>';
+				echo '<tr><th>Open</th><td class="td2">';
 				echo $jsonResultArray["Open"];
 				echo '</td></tr>';
 
-				echo '</table>';
-
-				print_r(($jsonResultArray["Timestamp"]));
+				echo '</table>';				
 
 			} else {
 				echo "There is no stock information available.";
@@ -189,7 +206,7 @@
 		} else {
 			echo "no HEY";
 		}		
-	?>	
-
+		?>	
+	</div>
 </body>
 </html>
