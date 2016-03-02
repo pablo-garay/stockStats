@@ -191,101 +191,107 @@
 			<?php
 				if (isset($_GET["symbol"])){
 					/* JSON */
-					$json = file_get_contents("http://dev.markitondemand.com/MODApis/Api/v2/Quote/json?symbol=" . htmlspecialchars($_GET["symbol"]));
-					$jsonResultArray = json_decode($json, true);
+					$json = @file_get_contents("http://dev.markitondemand.com/MODApis/Api/v2/Quote/json?symbol=" . htmlspecialchars($_GET["symbol"]));
 
-					// /* for debugging purposes */
-					// print_r($jsonResultArray);
-					if (isset($jsonResultArray["Message"])){
-						echo '<div class="info-message">No symbol matches found for symbol input.  Try another symbol such as MSFT or AAPL.</div>';
-
-					} else if ($jsonResultArray["Status"] === "SUCCESS"){
-
-						echo '<table class="table2">';
-
-						echo '<tr><th>Name</th><td class="td2">';
-						echo $jsonResultArray["Name"];
-						echo '</td></tr>';
-
-						echo '<tr><th>Symbol</th><td class="td2">';
-						echo $jsonResultArray["Symbol"];
-						echo '</td></tr>';
-
-						echo '<tr><th>Last Price</th><td class="td2">';
-						echo $jsonResultArray["LastPrice"];
-						echo '</td></tr>';
-
-						echo '<tr><th>Change</th><td class="td2">';
-						echo round($jsonResultArray["Change"], 2);
-						if ($jsonResultArray["Change"] > 0) 		echo '<img src="img/Green_Arrow_Up.png" class="marker-icon" alt="marker">';
-						else if ($jsonResultArray["Change"] < 0) 	echo '<img src="img/Red_Arrow_Down.png" class="marker-icon" alt="marker">';
-						echo '</td></tr>';
-
-						echo '<tr><th>Change Percent</th><td class="td2">';
-						echo strval(round($jsonResultArray["ChangePercent"], 2)) . "%";
-						if ($jsonResultArray["ChangePercent"] > 0) 		echo '<img src="img/Green_Arrow_Up.png" class="marker-icon" alt="marker">';
-						else if ($jsonResultArray["ChangePercent"] < 0) echo '<img src="img/Red_Arrow_Down.png" class="marker-icon" alt="marker">';				
-						echo '</td></tr>';
-
-						/* Here comes the Timestamp. It requires a few manipulations to output in the correct format */
-						echo '<tr><th>Timestamp</th><td class="td2">';
-						// echo $jsonResultArray["Timestamp"];
-						$matches = array();
-						preg_match('/^[A-Za-z]{3} ([A-Za-z]{3}) (\d+) (\d{2}:\d{2}):\d{2} \S* (\d{4})$/', $jsonResultArray["Timestamp"], $matches);
-						// echo ("<br />Timestamp " . $matches[4] . "-" . $matches[1]  . "-" . $matches[2] . " " . $matches[3]);
-						// /* e.g. 2016-Feb-26 15:59 */
-						// $timestamp_array = date_parse_from_format('Y-M-d H:i', $matches[4] . "-" . $matches[1]  . "-" . $matches[2] . " " . $matches[3]);
-						// echo "<br />AAAAAAAAA";
-						// print_r($timestamp_array);				
-
-						$date = DateTime::createFromFormat('Y-M-d H:i', $matches[4] . "-" . $matches[1]  . "-" . $matches[2] . " " . $matches[3]);
-						echo $date->format('Y-m-d h:i A');				
-						echo '</td></tr>';
-						// print_r(($jsonResultArray["Timestamp"]));
-
-						echo '<tr><th>Market Cap</th><td class="td2">';
-						echo strval(round($jsonResultArray["MarketCap"] / 1000000000, 2)) . " B";
-						echo '</td></tr>';
-
-						echo '<tr><th>Volume</th><td class="td2">';
-						echo number_format(($jsonResultArray["Volume"]), $decimals = 0 , $dec_point = "." , $thousands_sep = ",");
-						echo '</td></tr>';
-
-						echo '<tr><th>Change YTD</th><td class="td2">';
-						$changeYTD = $jsonResultArray["LastPrice"] - $jsonResultArray["ChangeYTD"];
-						if ($changeYTD < 0){ 
-							echo "(" . strval(round($changeYTD, 2)) . ")";				
-							echo '<img src="img/Red_Arrow_Down.png" class="marker-icon" alt="marker">';						
-						}
-						else {
-							echo strval(round($jsonResultArray["ChangeYTD"], 2));
-							if ($changeYTD > 0) echo '<img src="img/Green_Arrow_Up.png" class="marker-icon" alt="marker">';
-						}
-						echo '</td></tr>';
-
-						echo '<tr><th>Change Percent YTD</th><td class="td2">';
-						echo strval(round($jsonResultArray["ChangePercentYTD"], 2)) . "%";
-						if ($jsonResultArray["ChangePercentYTD"] > 0) 		echo '<img src="img/Green_Arrow_Up.png" class="marker-icon" alt="marker">';
-						else if ($jsonResultArray["ChangePercentYTD"] < 0) 	echo '<img src="img/Red_Arrow_Down.png" class="marker-icon" alt="marker">';					
-						echo '</td></tr>';
-
-						echo '<tr><th>High</th><td class="td2">';
-						echo $jsonResultArray["High"];
-						echo '</td></tr>';
-
-						echo '<tr><th>Low</th><td class="td2">';
-						echo $jsonResultArray["Low"];
-						echo '</td></tr>';
-
-						echo '<tr><th>Open</th><td class="td2">';
-						echo $jsonResultArray["Open"];
-						echo '</td></tr>';
-
-						echo '</table>';				
-
+					if ($json === FALSE){
+						echo '<div class="info-message">Error while trying to get JSON file resource</div>';
 					} else {
-						echo '<div class="info-message">There is no stock information available.</div>';
+						$jsonResultArray = json_decode($json, true);
+
+						// /* for debugging purposes */
+						// print_r($jsonResultArray);
+						if (isset($jsonResultArray["Message"])){
+							echo '<div class="info-message">No symbol matches found for symbol input.  Try another symbol such as MSFT or AAPL.</div>';
+
+						} else if ($jsonResultArray["Status"] === "SUCCESS"){
+
+							echo '<table class="table2">';
+
+							echo '<tr><th>Name</th><td class="td2">';
+							echo $jsonResultArray["Name"];
+							echo '</td></tr>';
+
+							echo '<tr><th>Symbol</th><td class="td2">';
+							echo $jsonResultArray["Symbol"];
+							echo '</td></tr>';
+
+							echo '<tr><th>Last Price</th><td class="td2">';
+							echo $jsonResultArray["LastPrice"];
+							echo '</td></tr>';
+
+							echo '<tr><th>Change</th><td class="td2">';
+							echo round($jsonResultArray["Change"], 2);
+							if ($jsonResultArray["Change"] > 0) 		echo '<img src="img/Green_Arrow_Up.png" class="marker-icon" alt="marker">';
+							else if ($jsonResultArray["Change"] < 0) 	echo '<img src="img/Red_Arrow_Down.png" class="marker-icon" alt="marker">';
+							echo '</td></tr>';
+
+							echo '<tr><th>Change Percent</th><td class="td2">';
+							echo strval(round($jsonResultArray["ChangePercent"], 2)) . "%";
+							if ($jsonResultArray["ChangePercent"] > 0) 		echo '<img src="img/Green_Arrow_Up.png" class="marker-icon" alt="marker">';
+							else if ($jsonResultArray["ChangePercent"] < 0) echo '<img src="img/Red_Arrow_Down.png" class="marker-icon" alt="marker">';				
+							echo '</td></tr>';
+
+							/* Here comes the Timestamp. It requires a few manipulations to output in the correct format */
+							echo '<tr><th>Timestamp</th><td class="td2">';
+							// echo $jsonResultArray["Timestamp"];
+							$matches = array();
+							preg_match('/^[A-Za-z]{3} ([A-Za-z]{3}) (\d+) (\d{2}:\d{2}):\d{2} \S* (\d{4})$/', $jsonResultArray["Timestamp"], $matches);
+							// echo ("<br />Timestamp " . $matches[4] . "-" . $matches[1]  . "-" . $matches[2] . " " . $matches[3]);
+							// /* e.g. 2016-Feb-26 15:59 */
+							// $timestamp_array = date_parse_from_format('Y-M-d H:i', $matches[4] . "-" . $matches[1]  . "-" . $matches[2] . " " . $matches[3]);
+							// echo "<br />AAAAAAAAA";
+							// print_r($timestamp_array);				
+
+							$date = DateTime::createFromFormat('Y-M-d H:i', $matches[4] . "-" . $matches[1]  . "-" . $matches[2] . " " . $matches[3]);
+							echo $date->format('Y-m-d h:i A');				
+							echo '</td></tr>';
+							// print_r(($jsonResultArray["Timestamp"]));
+
+							echo '<tr><th>Market Cap</th><td class="td2">';
+							echo strval(round($jsonResultArray["MarketCap"] / 1000000000, 2)) . " B";
+							echo '</td></tr>';
+
+							echo '<tr><th>Volume</th><td class="td2">';
+							echo number_format(($jsonResultArray["Volume"]), $decimals = 0 , $dec_point = "." , $thousands_sep = ",");
+							echo '</td></tr>';
+
+							echo '<tr><th>Change YTD</th><td class="td2">';
+							$changeYTD = $jsonResultArray["LastPrice"] - $jsonResultArray["ChangeYTD"];
+							if ($changeYTD < 0){ 
+								echo "(" . strval(round($changeYTD, 2)) . ")";				
+								echo '<img src="img/Red_Arrow_Down.png" class="marker-icon" alt="marker">';						
+							}
+							else {
+								echo strval(round($jsonResultArray["ChangeYTD"], 2));
+								if ($changeYTD > 0) echo '<img src="img/Green_Arrow_Up.png" class="marker-icon" alt="marker">';
+							}
+							echo '</td></tr>';
+
+							echo '<tr><th>Change Percent YTD</th><td class="td2">';
+							echo strval(round($jsonResultArray["ChangePercentYTD"], 2)) . "%";
+							if ($jsonResultArray["ChangePercentYTD"] > 0) 		echo '<img src="img/Green_Arrow_Up.png" class="marker-icon" alt="marker">';
+							else if ($jsonResultArray["ChangePercentYTD"] < 0) 	echo '<img src="img/Red_Arrow_Down.png" class="marker-icon" alt="marker">';					
+							echo '</td></tr>';
+
+							echo '<tr><th>High</th><td class="td2">';
+							echo $jsonResultArray["High"];
+							echo '</td></tr>';
+
+							echo '<tr><th>Low</th><td class="td2">';
+							echo $jsonResultArray["Low"];
+							echo '</td></tr>';
+
+							echo '<tr><th>Open</th><td class="td2">';
+							echo $jsonResultArray["Open"];
+							echo '</td></tr>';
+
+							echo '</table>';				
+
+						} else {
+							echo '<div class="info-message">There is no stock information available.</div>';
+						}						
 					}
+
 				} else if(isset($_GET["input"])){
 					// print_r($_POST);
 
@@ -295,9 +301,12 @@
 					// print_r($xml);
 
 					/* XML */
-					$xmlElement = simplexml_load_file('http://dev.markitondemand.com/MODApis/Api/v2/Lookup/xml?input=' . htmlspecialchars($_GET["input"]));	 
+					$xmlElement = @simplexml_load_file('http://dev.markitondemand.com/MODApis/Api/v2/Lookup/xml?input=' . htmlspecialchars($_GET["input"]));	 
 				    
-				    if ($xmlElement->count() == 0) {
+				    if ($xmlElement === false){ /* conditional for error handling */
+				    	echo '<div class="info-message">Error while trying to load XML file resource</div>';
+				    } else {
+						if ($xmlElement->count() == 0) {
 					    //it's empty
 					    echo '<div class="info-message">No Record has been found</div>';
 					    
@@ -325,6 +334,7 @@
 					}
 					//    echo "<br /><br />";
 					//    print_r($xmlElement->Status);	
+				    }
 				}
 			?>
 		</div>
