@@ -187,7 +187,7 @@
 					<div id="content">				
 						<label for="input">Company Name or Symbol: </label>
 						<div class="box">
-							<input type="text" id="input" name="input" placeholder="Enter company name e.g. Apple"
+							<input type="text" id="input" name="input" placeholder="e.g. Apple"
 								required pattern="^[a-zA-Z0-9][a-zA-Z0-9 ]*$" 
 								value='<?php if (isset($_GET["input"])) echo htmlspecialchars($_GET["input"]); ?>' > </input>
 							<div class="form-block">
@@ -207,7 +207,7 @@
 			<?php
 				if (isset($_GET["symbol"])){
 					/* JSON */
-					$json = @file_get_contents("http://dev.markitondemand.com/MODApis/Api/v2/Quote/json?symbol=" . htmlspecialchars($_GET["symbol"]));
+					$json = @file_get_contents("http://dev.markitondemand.com/MODApis/Api/v2/Quote/json?symbol=" . rawurlencode(htmlspecialchars($_GET["symbol"])));
 
 					if ($json === FALSE){
 						echo '<div class="info-message">Error while trying to get JSON file resource</div>';
@@ -317,7 +317,7 @@
 					// print_r($xml);
 
 					/* XML */
-					$xmlElement = @simplexml_load_file('http://dev.markitondemand.com/MODApis/Api/v2/Lookup/xml?input=' . htmlspecialchars($_GET["input"]));	 
+					$xmlElement = @simplexml_load_file('http://dev.markitondemand.com/MODApis/Api/v2/Lookup/xml?input=' . rawurlencode(htmlspecialchars($_GET["input"])));	 
 				    
 				    if ($xmlElement === false){ /* conditional for error handling */
 				    	echo '<div class="info-message">Error while trying to load XML file resource</div>';
@@ -340,7 +340,7 @@
 					    	echo '<td>' . $result->Name . '</td>';
 					    	echo '<td>' . $result->Symbol . '</td>';
 					    	echo '<td>' . $result->Exchange . '</td>';
-					    	echo '<td>' . '<a href="?input=' . htmlspecialchars($_GET["input"]) . '&symbol=' . $result->Symbol . '">More Info</a>' . '</td>';
+					    	echo '<td>' . '<a href="?input=' . rawurlencode(htmlspecialchars($_GET["input"])) . '&symbol=' . rawurlencode($result->Symbol) . '">More Info</a>' . '</td>';
 						   echo '</tr>';
 						}
 						echo "</table>";
