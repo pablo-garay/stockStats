@@ -10,7 +10,7 @@
 	div.centered 
 	{
 	    text-align: center;
-	    padding: 10em;
+	    padding: 4em;
 	}
 
 	div.centered table 
@@ -33,32 +33,6 @@
 		margin: 0 auto;
 		display: block;
 		margin-top: 10px; margin-bottom: 10px;
-	}
-
-	table, th, td {
-	    border: 2px solid;
-	    border-color: #CCCBCB;
-	    border-collapse: collapse;
-	    font-family: Arial, Helvetica, sans-serif;
-	}
-	th, td {
-		text-align: left;
-	    padding: 5px;
-	}
-	th {
-		font-weight: bold;
-		text-align: left;
-		background-color: #F5F5F5;
-	}
-	td {
-		background-color: #FBFAF9;
-	}
-	td.td2 {
-		text-align: center;
-	}
-
-	.table1, .table2{
-		width: 60%;
 	}
 
 	hr {
@@ -84,21 +58,10 @@
 		text-align: left;
 	}
 
-	.marker-icon {
-		height: 12px;
-		width: 12px;
-	}
-
 	.form-title {
 		font-weight: bold;
 		font-style: italic;
 		margin: 0; padding: 0;
-	}
-
-	input[type=submit], input[type=button] {
-		background-color: white;
-		border-radius:5px;
-		display: block;
 	}
 
 	.horizontal-box {
@@ -107,6 +70,75 @@
 
 	.vertical-box {
 		display: inline;
+	}	
+
+	input[type=submit], input[type=button] {
+		background-color: white;
+		border-radius:5px;
+		display: block;
+	}
+
+	table, th, td {
+	    border-collapse: collapse;
+	    font-family: Arial, Helvetica, sans-serif;
+	}
+	th, td {
+		text-align: left;
+	    padding: 5px;
+	}
+	th {
+		font-weight: bold;
+		text-align: left;
+		background-color: #F5F5F5;
+	}
+	td {
+		background-color: #FBFAF9;
+	}
+	td.td2 {
+		text-align: center;
+	}
+
+	.table1, .table2{
+		width: 710px;
+	}
+
+	.table2 {
+		height: 432px;
+	}
+
+	/* table inner borders */
+	td + td,
+	th + th,
+	th + td { border-left: 1px solid #CCCBCB; }
+	tr + tr { border-top: 1px solid #CCCBCB; }
+
+	/* table outer borders */
+	/* up */
+	table tr:first-child{
+	  border-top: solid 2px;
+	  border-color: #CCCBCB;
+	}
+	/* down */
+	table tr:last-child{
+	  border-bottom: solid 2px;
+	  border-color: #CCCBCB;
+	}
+	/* left */
+	table td:first-child,
+	table th:first-child {
+	  border-left: solid 2px;
+	  border-color: #CCCBCB;
+	}
+	/* right */
+	table td:last-child,
+	table th:last-child {
+	  border-right: solid 2px;
+	  border-color: #CCCBCB;
+	}
+
+	.marker-icon {
+		height: 12px;
+		width: 12px;
 	}
 
 	.info-message {
@@ -130,7 +162,6 @@
 </head>
 
 <body>
-
     <div class="centered">
     	<div class="form-container">
 			<h1 class="form-title">Stock Search</h1>
@@ -160,7 +191,7 @@
 			<?php
 				if (isset($_GET["symbol"])){
 					/* JSON */
-					$json = file_get_contents("http://dev.markitondemand.com/MODApis/Api/v2/Quote/json?symbol=" . $_GET["symbol"]);
+					$json = file_get_contents("http://dev.markitondemand.com/MODApis/Api/v2/Quote/json?symbol=" . htmlspecialchars($_GET["symbol"]));
 					$jsonResultArray = json_decode($json, true);
 
 					// /* for debugging purposes */
@@ -264,7 +295,7 @@
 					// print_r($xml);
 
 					/* XML */
-					$xmlElement = simplexml_load_file('http://dev.markitondemand.com/MODApis/Api/v2/Lookup/xml?input=' . $_GET["input"]);	 
+					$xmlElement = simplexml_load_file('http://dev.markitondemand.com/MODApis/Api/v2/Lookup/xml?input=' . htmlspecialchars($_GET["input"]));	 
 				    
 				    if ($xmlElement->count() == 0) {
 					    //it's empty
@@ -284,7 +315,7 @@
 					    	echo '<td>' . $result->Name . '</td>';
 					    	echo '<td>' . $result->Symbol . '</td>';
 					    	echo '<td>' . $result->Exchange . '</td>';
-					    	echo '<td>' . '<a href="?input=' . $_GET["input"] . '&symbol=' . $result->Symbol . '">More Info</a>' . '</td>';
+					    	echo '<td>' . '<a href="?input=' . htmlspecialchars($_GET["input"]) . '&symbol=' . $result->Symbol . '">More Info</a>' . '</td>';
 						   echo '</tr>';
 						}
 						echo "</table>";
@@ -298,5 +329,6 @@
 			?>
 		</div>
 	</div>
+<noscript>	
 </body>
 </html>
