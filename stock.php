@@ -47,8 +47,8 @@
 		display: block;
 	}
 
-	.form-block {
-		margin: 5px;
+	.form-block{
+		margin-top: 5px;
 		padding: 0;
 	}
 
@@ -64,19 +64,27 @@
 		margin: 0; padding: 0;
 	}
 
-	.horizontal-box {
-		display: inline;
+	.box {
+		display:inline-block;
+		vertical-align:top;
 	}
 
-	.vertical-box {
+	.inlined {
 		display: inline;
-	}	
+	}
 
 	input[type=submit], input[type=button] {
 		background-color: white;
 		border-radius:5px;
-		display: block;
+		border: solid #CCCBCB;
+		border-width: 1px;
 	}
+
+	input[type=text]{
+		border: solid #CCCBCB;
+		border-width: 1px;
+	}
+
 
 	table, th, td {
 	    border-collapse: collapse;
@@ -169,17 +177,18 @@
 
 			<form id= "inputForm" method="GET" action="">
 				<div class="form-input">
-						<div class="horizontal-box">
-							<label for="input">Company Name or Symbol: </label>
-							
-							<div class="vertical-box">
-								<input type="text" id="input" name="input" placeholder="Enter company name e.g. Apple"
-									required pattern="^[a-zA-Z0-9][a-zA-Z0-9 ]*$" 
-									value='<?php if (isset($_GET["input"])) echo htmlspecialchars($_GET["input"]); ?>' > </input>
-								<input type="submit" value="Search" autofocus></input>
+					<div id="content">				
+						<label for="input">Company Name or Symbol: </label>
+						<div class="box">
+							<input type="text" id="input" name="input" placeholder="Enter company name e.g. Apple"
+								required pattern="^[a-zA-Z0-9][a-zA-Z0-9 ]*$" 
+								value='<?php if (isset($_GET["input"])) echo htmlspecialchars($_GET["input"]); ?>' > </input>
+							<div class="form-block">
+								<input type="submit" value="Search" autofocus></input>								
 								<input type="button" value="Clear" onclick="clearSearch();"></input>
 							</div>
-						</div>						
+						</div>
+					</div>				
 				</div>
 			</form>
 			<div class="form-block">
