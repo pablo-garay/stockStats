@@ -1,10 +1,3 @@
-<?php
-	if( ! ini_get('date.timezone') )
-	{
-	    date_default_timezone_set('GMT');
-	}
-?>
-
 <!DOCTYPE html>
 <html>
 
@@ -251,20 +244,29 @@
 							echo '<tr><th>Timestamp</th><td class="td2">';
 							// echo $jsonResultArray["Timestamp"];
 							$matches = array();
-							preg_match('/^[A-Za-z]{3} ([A-Za-z]{3}) (\d+) (\d{2}:\d{2}):\d{2} \S* (\d{4})$/', $jsonResultArray["Timestamp"], $matches);
+							preg_match('/^[A-Za-z]{3} ([A-Za-z]{3}) (\d+) (\d{2}:\d{2}):\d{2} UTC(\S*) (\d{4})$/', $jsonResultArray["Timestamp"], $matches);
 							// echo ("<br />Timestamp " . $matches[4] . "-" . $matches[1]  . "-" . $matches[2] . " " . $matches[3]);
 							// /* e.g. 2016-Feb-26 15:59 */
 							// $timestamp_array = date_parse_from_format('Y-M-d H:i', $matches[4] . "-" . $matches[1]  . "-" . $matches[2] . " " . $matches[3]);
 							// echo "<br />AAAAAAAAA";
-							// print_r($timestamp_array);				
-
-							$date = DateTime::createFromFormat('Y-M-d H:i', $matches[4] . "-" . $matches[1]  . "-" . $matches[2] . " " . $matches[3]);
-							echo $date->format('Y-m-d h:i A');				
+							// print_r($timestamp_array);
+							date_default_timezone_set('America/Los_Angeles');
+							$date = DateTime::createFromFormat('Y-M-d H:i P', 
+											  $matches[5] . "-" . $matches[1]  . "-" . $matches[2] . " " . $matches[3] . " " . $matches[4]);
+							// print_r($date);
+							$tz = new DateTimeZone('America/Los_Angeles');
+							echo $date->setTimezone($tz)->format('Y-m-d h:i A');				
 							echo '</td></tr>';
 							// print_r(($jsonResultArray["Timestamp"]));
 
 							echo '<tr><th>Market Cap</th><td class="td2">';
-							echo strval(round($jsonResultArray["MarketCap"] / 1000000000, 2)) . " B";
+							if ($jsonResultArray["MarketCap"] >= 1000000000){
+								echo strval(round($jsonResultArray["MarketCap"] / 1000000000, 2)) . " B";
+							} else if ($jsonResultArray["MarketCap"] >= 1000000){
+								echo strval(round($jsonResultArray["MarketCap"] / 1000000, 2)) . " M";
+							} else {
+								echo strval(round($jsonResultArray["MarketCap"], 2));
+							}
 							echo '</td></tr>';
 
 							echo '<tr><th>Volume</th><td class="td2">';
